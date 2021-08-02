@@ -23,7 +23,7 @@ const filesToC = [
 ];
 
 self.addEventListener("install", function(e){
-    e.waitUntil(
+    e.waitUntil( // install steps
         caches.open(cName)
             .then(function(c){
                 console.log('installing : ' + cName)
@@ -32,19 +32,19 @@ self.addEventListener("install", function(e){
     );
 });
 
-self.addEventListener("fetch", function(e){
-    if (e.request.url.includes("/api/")) {
+self.addEventListener("fetch", function(e){ // fetch cached resources
+    if (e.req.url.includes("/api/")) {
         e.respondWith(
             caches.open(dCacheName).then(c =>{
-                return fetch(e.request)
-                    .then(response =>{
-                        if(response.status === 200){
-                            c.put(e.request.url, response.clone());
+                return fetch(e.req)
+                    .then(res =>{
+                        if(res.status === 200){
+                            c.put(e.req.url, res.clone());
                         }
-                        return response;
+                        return res;
                     })
                     .catch(err =>{
-                        return c.match(e.request);
+                        return c.match(e.req);
                     });
             })
             .catch(err => console.log("ERR->> " + err))
@@ -53,12 +53,12 @@ self.addEventListener("fetch", function(e){
     }
     else{
         e.respondWith(
-            fetch(e.request).catch(function(){
-                return caches.match(e.request).then(function(response){
-                    if(response) {
-                        return response;
+            fetch(e.req).catch(function(){
+                return caches.match(e.req).then(function(res){
+                    if(res) {
+                        return res;
                     }
-                    else if(e.request.headers.get("accept").includes("text/html")){
+                    else if(e.req.headers.get("accept").includes("text/html")){
                         return caches.match("/");
                     }
                 });

@@ -8,6 +8,7 @@ const indexedDB =
 let db;
 const req = indexedDB.open("budget", 1);
 
+//Requests 
 req.onupgradeneeded = ({ target }) => {
     let db = target.result;
     db.createObjectStore("pending", { autoIncrement: true });
@@ -15,48 +16,48 @@ req.onupgradeneeded = ({ target }) => {
 
 req.onsuccess = ({ target }) => {
     db = target.result;
-    if(navigator.onLine){
-        checkDB();
+    if(navigator.onLine){ //checks to see if app is online 
+        checkDB();//read db
     }
 };
 
-req.onerror = function(e){
+req.onerror = function(e){ // sends error response
     console.log("ERR ---> "+ e.target.errorCode);
 };
 
 
 //functions
-function saveRecord(rec) {
+function saveRecord(rec) { // saves item into the db
     const transaction = db.transaction(["pending"], "readwrite");
-    const store = transaction.objectStore("pending");
-    store.add(rec)
+    const record = transaction.objectStore("pending");
+    record.add(rec) // adds rec to the store
 }
 
-function checkDB() {
+function checkDB() { // checks db for record
     const transaction = db.transaction(["pending"], "readwrite");
-    const store = transaction.objectStore("pending");
-    const getAll = store.getAll();
+    const record = transaction.objectStore("pending");
+    const getAllRec = record.getAll();
 
-    getAll.onsuccess = function(){
-        if(getAll.result.length > 0){
+    getAllRec.onsuccess = function(){ // shows all results if successful
+        if(getAllRec.result.length > 0){
             fetch("/api/transaction/bulk", {
                 method: "POST",
-                body: JSON.stringify(getAll.result),
+                body: JSON.stringify(getAllRec.result),
                 headers: {
                     Accept: "application/json, text/plain, */*",
                     "Content-Type": "application/json"
                 }
             })
-            .then(response =>{
-                return response.json();
+            .then(res =>{
+                return res.json();
             })
             .then(() =>{
                 const transaction = db.transaction(["pending"], "readwrite");
-                const store = transaction.objectStore("pending");
-                store.clear();
+                const record = transaction.objectStore("pending");
+                record.clear(); // delete item if successful
             });
         }
     };  
 }
 
-window.addEventListener("online", checkDB);
+window.addEventListener("online", checkDB); // listener to check if app came back online
