@@ -1,8 +1,13 @@
 # 19 Progressive Web Applications (PWA): Budget Tracker
 
-## Documentation
+## Documentation 8/25/19
+I am not going to write much documentation as I do not have as much time as I would like (Writing this while working on other challenges and also the final project). The error I fixed in this is some missing and messed up code that I had to refactor in order to make sure offline usage worked. The only other error I have is from messing around and breaking the Your total is counter. I worked to troubleshoot this challenge with my tutor, he helped me fix aspects of this code that was broken by explaining what I was doing wrong.
+
+https://sleepy-thicket-95450.herokuapp.com/
 
 ### Screenshots
+
+![heroku screenshot](./Assets/BudgetTracker.gif)
 
 ## Instructions
 Giving users a fast and easy way to track their money is important, but allowing them to access that information at any time is even more important. Having offline functionality is paramount to the success of an application that handles users’ financial information.
